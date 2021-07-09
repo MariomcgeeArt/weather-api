@@ -87,21 +87,18 @@
       const formEl = document.getElementById('form')
       const zipInput = document.getElementById('zip')
       const apikey = '0ddcf1451165d2ef8167dcb1a6cc9187'
-      const callback = json => {
-        
-        tempEl.innerHTML = json.main.temp
-        descEl.innerHTML = json.weather[0].description
-        
-  
-      }
+   
 
       // Define event listeners
-      formEl.addEventListener('submit', (e) => {
+      formEl.addEventListener('submit', async (e) => {
         e.preventDefault()
         const zip = zipInput.value
         
-        const weather = getWeather(apikey, zip, callback)
-        console.log(weather)
+        const json = await getWeather(apikey, zip)
+        tempEl.innerHTML = json.main.temp
+        descEl.innerHTML = json.weather[0].description
+        console.log(json)
+        
       })
       
 
