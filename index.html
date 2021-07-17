@@ -20,6 +20,10 @@
         margin: 0 0 1rem 0;
       }
 
+      #desc {
+        font-weight: normal;
+      }
+
       .container {
         width: 400px;
         display: flex;
@@ -27,6 +31,11 @@
         border: 1px
       }
 
+      #feels_like {
+        font-size: 1em;
+        font-weight: bold;
+      }
+      
       #form {
         display: flex;
       }
@@ -56,12 +65,13 @@
   </head>
   <body>
     <div class="container">
-      <h1 id="temp">
-        <!--Temp -->
-      </h1>
-      <p id="desc">
-        <!-- description -->
-      </p>
+      <h1 id="name"><!--Name--></h1>
+      <p id="code"><!--Code--></p>
+      <h1 id="temp"><!--Temp--></h1>
+      <p id="feels_like"><!--Feels Like--></p>
+      <p id="temp_max"><!--Temp max--></p>
+      <p id="temp_min"><!--Temp min --></p>
+      <p id="desc"><!--Description--></p>
       <form id="form">
         <input 
           id="zip" 
@@ -73,37 +83,46 @@
         <button type="submit">Search</button>
       </form>
     </div>
-]
+
     <script type="module">
+      import { getWeatherByZip, getWeatherByCity, getWeatherByGeo } from './src/index.js'
       // ------------------------------------------------------
       // Developer Code
 
-      //imports
-      import {getWeather} from './index.js'
-
       // Get Element refererences
-       const tempEl = document.getElementById('temp')
+      const nameEl = document.getElementById('name')
+      const tempEl = document.getElementById('temp')
+      const tempMaxEl = document.getElementById('temp_max')
+      const tempMinEl = document.getElementById('temp_min')
       const descEl = document.getElementById('desc')
+      const codeEl = document.getElementById('code')
+      const feelEl = document.getElementById('feels_like')
       const formEl = document.getElementById('form')
       const zipInput = document.getElementById('zip')
-      const apikey = '0ddcf1451165d2ef8167dcb1a6cc9187'
-   
 
       // Define event listeners
-      formEl.addEventListener('submit', async (e) => {
+      formEl.addEventListener('submit', (e) => {
         e.preventDefault()
         const zip = zipInput.value
-        
-        const json = await getWeather(apikey, zip)
-        tempEl.innerHTML = json.main.temp
-        descEl.innerHTML = json.weather[0].description
-        console.log(json)
-        
-      })
-      
+        const apiKey = '894816c699b8220e363e90a4d4fc5b77'
 
-      // Functions 
-   
+        getWeatherByZip(apiKey, zip)
+          .then((data) => {
+            console.log(data)
+            tempEl.innerHTML = data.temp
+            descEl.innerHTML = data.description.charAt(0).toUpperCase() + data.description.slice(1);
+            nameEl.innerHTML = data.name
+            feelEl.innerHTML = 'Feels like:' + ' ' + data.feels_like
+            codeEl.innerHTML = 'Code:' + ' ' + data.code
+            tempMaxEl.innerHTML = 'Max temp:' + ' ' + data.temp_max
+            tempMinEl.innerHTML = 'Min temp:' + ' ' + data.temp_min
+          }).catch(err => console.log(err.message))
+
+        // getWeather(zip, apiKey, (data) => {
+          // tempEl.innerHTML = data.main.temp
+          // descEl.innerHTML = data.weather[0].description
+        // })
+      })
            
     </script>
   </body>
